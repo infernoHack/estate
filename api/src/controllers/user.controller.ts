@@ -6,10 +6,50 @@ import { catchAsync } from "../utils";
 import cloudinary from "../cloudinary";
 import { RequestWithUser } from "../RequestWithUser.types";
 
+type User = {
+  id: string;
+  username: string;
+  fullname: string;
+  email: string;
+  password: string;
+  chatIds: string[];
+  createdAt: Date;
+  avatar: {
+    id: string;
+    url: string;
+    filename: string;
+    public_id: string;
+    userId: string;
+    createdAt: Date;
+  } | null;
+  savedPosts: {
+    id: string;
+    title: string;
+    price: number;
+    latitude: number;
+    longitude: number;
+    address: string;
+    transaction: string;
+    property: string;
+    images: {
+      filename: string;
+      url: string;
+      public_id: string;
+    }[];
+    features: {
+      sizes: {
+        house: number;
+        bedrooms: number;
+        bathrooms: number;
+      };
+    };
+  }[];
+};
+
 export const getUsers = catchAsync(async (req: Request, res: Response) => {
   const users = await prisma.user.findMany({ include: { avatar: true } });
 
-  const usersWithoutPassword = users.map((user) => {
+  const usersWithoutPassword = users.map((user: User) => {
     return {
       id: user.id,
       username: user.username,
@@ -171,7 +211,7 @@ export const updateUserSavedPosts = catchAsync(
       },
     });
 
-    if (foundUser!.savedPosts.some((item) => item.id === id)) {
+    if (foundUser!.savedPosts.some((item: { id: string }) => item.id === id)) {
       const updatedUser = await prisma.user.update({
         where: {
           id: req.user,

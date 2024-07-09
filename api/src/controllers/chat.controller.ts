@@ -15,26 +15,34 @@ export const getChats = catchAsync(
     });
 
     const modifiedChats = await Promise.all(
-      chats.map(async (chat) => {
-        const receiverId = chat.userIds.find((id) => id !== req.user);
+      chats.map(
+        async (chat: {
+          id: string;
+          userIds: string[];
+          seenBy: string[];
+          lastMessage: string | null;
+          createdAt: Date;
+        }) => {
+          const receiverId = chat.userIds.find((id: string) => id !== req.user);
 
-        const receiver = await prisma.user.findUnique({
-          where: {
-            id: receiverId,
-          },
-          select: {
-            id: true,
-            username: true,
-            avatar: {
-              select: {
-                url: true,
+          const receiver = await prisma.user.findUnique({
+            where: {
+              id: receiverId,
+            },
+            select: {
+              id: true,
+              username: true,
+              avatar: {
+                select: {
+                  url: true,
+                },
               },
             },
-          },
-        });
+          });
 
-        return { ...chat, receiver };
-      })
+          return { ...chat, receiver };
+        }
+      )
     );
 
     res.status(200).send(modifiedChats);
@@ -65,7 +73,7 @@ export const getChat = catchAsync(
       },
     });
 
-    const receiverId = chat!.userIds.find((id) => id !== req.user);
+    const receiverId = chat!.userIds.find((id: string) => id !== req.user);
 
     const receiver = await prisma.user.findUnique({
       where: {
