@@ -5,7 +5,9 @@ import { catchAsync } from "../utils";
 import cloudinary from "../cloudinary";
 import AppError from "../AppError";
 import { RequestWithUser } from "../RequestWithUser.types";
-import { Property, Transaction } from "../../node_modules/.prisma/client";
+
+type Property = "apartment" | "house" | "condo" | "land";
+type Transaction = "buy" | "rent";
 
 export const getPosts = catchAsync(async (req: Request, res: Response) => {
   const {
