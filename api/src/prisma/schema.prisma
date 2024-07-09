@@ -1,0 +1,123 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  username String  @unique
+  fullname String
+  email    String  @unique
+  password String
+  avatar   Avatar?
+  posts Post[]
+  savedPosts SavedPost[]
+  chats Chat[] @relation(fields: [chatIds], references: [id])
+  chatIds String[] @db.ObjectId
+  createdAt DateTime @default(now())
+}
+
+model Avatar {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  url      String
+  filename String
+  public_id String
+  user     User    @relation(fields: [userId], references: [id])
+  userId   String  @unique @db.ObjectId
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  title String
+  price Float
+  images Image[]
+  latitude Float
+  longitude Float
+  city String
+  address String
+  description String
+  transaction Transaction
+  property Property
+  features Feature
+  user User @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
+  createdAt DateTime @default(now())
+}
+
+type SavedPost {
+  id String
+  title String
+  price Float
+  images Image[]
+  latitude Float
+  longitude Float
+  address String
+  transaction String
+  property String
+  features Feature
+}
+
+type Image {
+  filename String
+  url      String
+  public_id String
+}
+
+enum Transaction {
+  buy
+  rent
+}
+
+enum Property {
+  apartment
+  house
+  condo
+  land
+}
+
+type Feature {
+  general General[]
+  sizes Size
+  nearbyPlaces NearbyPlace[]
+}
+
+type General {
+  utilites Boolean
+  petPolicy Boolean 
+  income Boolean
+}
+
+type Size {
+  house Int
+  bedrooms Int
+  bathrooms Int
+}
+
+type NearbyPlace {
+  key String
+  value String
+}
+
+model Chat {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  messages Message[]
+  users User[] @relation(fields: [userIds], references: [id])
+  userIds String[] @db.ObjectId
+  seenBy String[] @db.ObjectId
+  lastMessage  String?
+  createdAt DateTime @default(now())
+}
+
+model Message {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  text String
+  userId String @db.ObjectId
+  chat Chat @relation(fields: [chatId], references: [id])
+  chatId String @db.ObjectId
+  createdAt DateTime @default(now())
+}
