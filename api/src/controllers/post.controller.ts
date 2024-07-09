@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { Property, Transaction } from "@prisma/client";
 
 import prisma from "../lib/prisma";
 import { catchAsync } from "../utils";
 import cloudinary from "../cloudinary";
 import AppError from "../AppError";
 import { RequestWithUser } from "../RequestWithUser.types";
+import { Property, Transaction } from "../../node_modules/.prisma/client";
 
 export const getPosts = catchAsync(async (req: Request, res: Response) => {
   const {
