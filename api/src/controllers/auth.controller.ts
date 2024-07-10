@@ -53,7 +53,7 @@ export const register = catchAsync(async (req: Request, res: Response) => {
     .cookie("authorization", token, {
       maxAge: COOKIE_AGE,
       httpOnly: true,
-      sameSite: false,
+      sameSite: "none",
       secure: true,
     })
     .send(newUser);
@@ -89,7 +89,7 @@ export const login = catchAsync(async (req: Request, res: Response) => {
     .cookie("authorization", token, {
       maxAge: COOKIE_AGE,
       httpOnly: true,
-      sameSite: false,
+      sameSite: "none",
       secure: true,
     })
     .send(others);
