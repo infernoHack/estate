@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/package.json",
+      "src": "package.json",
       "use": "@vercel/node",
       "config": { "outputDirectory": "dist" }
     }
